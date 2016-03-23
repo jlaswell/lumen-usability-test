@@ -15,15 +15,16 @@ env:
   CACHE_DRIVER: array
   QUEUE_DRIVER: sync
 before_install:
-- docker -v
+# Use a more up-to-date version of Docker
 - sudo apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install docker-engine
 - docker -v
-- sudo rm /usr/local/bin/docker-compose
+- docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 - curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m`" > docker-compose
 - chmod +x docker-compose
 - sudo mv docker-compose /usr/local/bin
-- cp .env.example .env
 - sudo /etc/init.d/postgresql stop
+# Prepare the environment
+- cp .env.example .env
 install:
 - composer install --no-interaction --prefer-dist
 script:
